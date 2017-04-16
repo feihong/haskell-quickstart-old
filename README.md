@@ -2,7 +2,15 @@
 
 ## Installation
 
-Unix systems: `curl -sSL https://get.haskellstack.org/ | sh`
+Install Stack. On Unix systems, run this command:
+
+`curl -sSL https://get.haskellstack.org/ | sh`
+
+## Running
+
+The files in this project are scripts, so you can run them directly using stack, e.g. 
+
+`stack hello-world.hs`
 
 ## Sources
 
