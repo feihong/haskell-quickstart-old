@@ -4,7 +4,10 @@
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
+import System.Random
 
+
+choices :: [(String, String)]
 choices = [
   ("English", "Hello World"),
   ("German", "Hallo Welt"),
@@ -13,6 +16,16 @@ choices = [
   ("Esperanto", "Saluton mondo")
   ]
 
+randomIndex :: Int -> StdGen -> (Int, StdGen)
+randomIndex n g =
+  randomR (0, n) g
 
-main =
-  putStrLn $ snd $ choices !! 0
+
+main :: IO ()
+main = do
+  gen <- getStdGen
+  let n = length choices
+  let (index, _) = randomIndex (n - 1) gen
+  -- putStrLn $ show index
+  let (lang, phrase) = choices !! index
+  putStrLn $ phrase ++ " (" ++ lang ++ ")"
