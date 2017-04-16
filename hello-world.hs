@@ -1,6 +1,7 @@
 {- stack
   script
   --resolver lts-8.11
+  --package random
 -}
 {-# LANGUAGE OverloadedStrings #-}
 

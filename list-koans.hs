@@ -19,3 +19,6 @@ main = hspec $ do
 
     it "<$>" $ do
       (+ 1) <$> [1..10] `shouldBe` [2..11]
+
+    it "filter" $ do
+      filter (\n -> n `mod` 3 == 0) [1..20] `shouldBe` [3, 6, 9, 12, 15, 18]
