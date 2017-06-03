@@ -34,6 +34,21 @@ squishMap :: (a -> [b]) -> [a] -> [b]
 squishMap f = foldr ((++) . f) []
 
 
+squishAgain :: [[a]] -> [a]
+squishAgain = squishMap id
+
+
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy f (x:xs) = foldl (\b a ->
+  if f b a == GT then b else a) x (x:xs)
+
+
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy f (x:xs) = foldl (\b a ->
+  if f b a == LT then b else a) x (x:xs)
+
+
+
 main :: IO ()
 main = hspec $ do
   describe "Fold exercises" $ do
@@ -63,3 +78,16 @@ main = hspec $ do
 
     it "squishMap" $ do
       squishMap (replicate 2) ['a', 'b', 'c'] `shouldBe` "aabbcc"
+
+    it "squishAgain" $ do
+      squishAgain [[1,2,3], [4,5,6], [7,8,9,10]] `shouldBe` [1..10]
+
+    it "myMaximumBy" $ do
+      myMaximumBy compare [1,5,8,4,3,7] `shouldBe` 8
+      myMaximumBy (\_ _ -> GT) [1..10] `shouldBe` 1
+      myMaximumBy (\_ _ -> LT) [1..10] `shouldBe` 10
+
+    it "myMinimumBy" $ do
+      myMinimumBy compare [1,5,8,2,-3,4,3,7] `shouldBe` -3
+      myMinimumBy (\_ _ -> GT) [1..10] `shouldBe` 10
+      myMinimumBy (\_ _ -> LT) [1..10] `shouldBe` 1
