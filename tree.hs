@@ -18,7 +18,7 @@ inorder (Node left x right) = inorder left ++ [x] ++ inorder right
 
 
 foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
-foldTree f z tree = foldr f z $ inorder tree
+foldTree f z = foldr f z . inorder
 
 
 unfold :: (a -> Maybe (a, b, a)) -> a -> BinaryTree b
