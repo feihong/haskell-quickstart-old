@@ -42,6 +42,10 @@ prop_divAndMod x y =
   in
     (div x y') * y' + (mod x y') == (x :: Integer)
 
+prop_foldrConcatEmptyAndConcatFunc :: [[Int]] -> Bool
+prop_foldrConcatEmptyAndConcatFunc xs =
+  foldr (++) [] xs == concat xs
+
 
 main :: IO ()
 main = do
@@ -51,3 +55,4 @@ main = do
   quickCheck prop_plusCommutative
   quickCheck prop_quotAndRem
   quickCheck prop_divAndMod
+  quickCheck prop_foldrConcatEmptyAndConcatFunc

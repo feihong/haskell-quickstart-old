@@ -14,8 +14,13 @@ prop_powerCommutative :: Integer -> Integer -> Bool
 prop_powerCommutative x y =
   x ^ y == y ^ x
 
+prop_foldrConsAndConcat :: [Int] -> [Int] -> Bool
+prop_foldrConsAndConcat x y =
+  foldr (:) x y == x ++ y
+
 
 main :: IO ()
 main = do
   -- quickCheck prop_powerAssociative
-  quickCheck prop_powerCommutative
+  -- quickCheck prop_powerCommutative
+  quickCheck prop_foldrConsAndConcat
