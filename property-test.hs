@@ -5,12 +5,16 @@
   --package QuickCheck
 -}
 import Data.List (sort)
-import Test.Hspec
+-- import Test.Hspec
 import Test.QuickCheck
 
 
 half x = x / 2
 halfIdentity = (*2) . half
+
+prop_halfIdentity :: Double -> Bool
+prop_halfIdentity x =
+  halfIdentity x == x
 
 listOrdered :: (Ord a) => [a] -> Bool
 listOrdered xs =
@@ -20,11 +24,15 @@ listOrdered xs =
         go y (Just x, t) = (Just y, x >= y)
 
 
-main :: IO ()
-main = hspec $ do
-  describe "Property tests" $ do
-    it "halfIdentity is equivalent to identity" $ do
-      property $ \x -> halfIdentity x == (x :: Double)
+prop_listOrdered x =
+    listOrdered $ sort (x :: [Integer])
 
-    it "sorted list is ordered" $ do
-      property $ \x -> listOrdered $ sort (x :: [Integer])
+prop_plusAssociative x y z =
+  (x :: Integer) + (y + z) == (x + y) + z
+
+
+main :: IO ()
+main = do
+  quickCheck prop_halfIdentity
+  quickCheck prop_listOrdered
+  quickCheck prop_plusAssociative
