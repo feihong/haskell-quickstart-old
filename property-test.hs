@@ -23,16 +23,32 @@ listOrdered xs =
         go y (Nothing, t) = (Just y, t)
         go y (Just x, t) = (Just y, x >= y)
 
-
 prop_listOrdered x =
     listOrdered $ sort (x :: [Integer])
 
 prop_plusAssociative x y z =
   (x :: Integer) + (y + z) == (x + y) + z
 
+prop_plusCommutative x y =
+  (x :: Float) + y == y + x
+
+prop_quotAndRem x y =
+  let
+    y' = if y == 0 then -1 else y
+  in
+    (quot x y') * y' + (rem x y') == (x :: Integer)
+
+prop_divAndMod x y =
+  let
+    y' = if y == 0 then -1 else y
+  in
+    (div x y') * y' + (mod x y') == (x :: Integer)
 
 main :: IO ()
 main = do
   quickCheck prop_halfIdentity
   quickCheck prop_listOrdered
   quickCheck prop_plusAssociative
+  quickCheck prop_plusCommutative
+  quickCheck prop_quotAndRem
+  quickCheck prop_divAndMod
