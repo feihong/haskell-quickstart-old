@@ -1,11 +1,9 @@
 {- stack
   script
   --resolver lts-8.11
-  --package hspec
   --package QuickCheck
 -}
 import Data.List (sort)
--- import Test.Hspec
 import Test.QuickCheck
 
 
@@ -43,6 +41,7 @@ prop_divAndMod x y =
     y' = if y == 0 then -1 else y
   in
     (div x y') * y' + (mod x y') == (x :: Integer)
+
 
 main :: IO ()
 main = do
