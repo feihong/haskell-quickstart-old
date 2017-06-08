@@ -20,6 +20,7 @@ monoidRightIdentity a =
   mappend a mempty == a
 
 
+-- Product monoid
 data Two a b =
   Two a b
   deriving (Eq, Show)
@@ -39,7 +40,32 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Two a b) where
     return $ Two a b
 
 type TwoIntString = Two (Product Int) String
+
 type TwoAssoc = TwoIntString-> TwoIntString -> TwoIntString -> Bool
+
+
+-- Function monoid
+newtype Combine a b =
+  Combine { unCombine :: (a -> b) }
+
+instance Semigroup b => Semigroup (Combine a b) where
+  Combine f <> Combine g = Combine (\x -> f x <> g x)
+
+instance (Semigroup b, Monoid b) => Monoid (Combine a b) where
+  mempty = Combine (\_ -> mempty)
+  mappend = (<>)
+
+-- Another function monoid
+newtype Comp a =
+  Comp { unComp :: (a -> a) }
+
+instance Semigroup a => Semigroup (Comp a) where
+  Comp f <> Comp g = Comp (f <> g)
+
+instance (Semigroup a, Monoid a) => Monoid (Comp a) where
+  mempty = Comp (\_ -> mempty)
+  mappend = (<>)
+
 
 main :: IO ()
 main = do
