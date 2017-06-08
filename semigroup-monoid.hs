@@ -63,8 +63,22 @@ instance Semigroup a => Semigroup (Comp a) where
   Comp f <> Comp g = Comp (f <> g)
 
 instance (Semigroup a, Monoid a) => Monoid (Comp a) where
-  mempty = Comp (\_ -> mempty)
+  mempty = mempty
   mappend = (<>)
+
+-- A difficult monoid
+newtype Mem s a =
+  Mem {
+    runMem :: s -> (a, s)
+  }
+
+instance Monoid a => Monoid (Mem s a) where
+  mempty = Mem (\s -> (mempty, s))
+  mappend (Mem f) (Mem g) =
+    Mem (\s -> let (a1, s1) = f s
+                   (a2, s2) = g s
+                in
+                  (mappend a1 a2, s1))
 
 
 main :: IO ()
