@@ -78,7 +78,7 @@ instance Monoid a => Monoid (Mem s a) where
     Mem (\s -> let (a1, s1) = f s
                    (a2, s2) = g s
                 in
-                  (mappend a1 a2, s1))
+                  (mappend a1 a2, snd $ g s1))
 
 
 main :: IO ()
