@@ -43,5 +43,6 @@ type TwoAssoc = TwoIntString-> TwoIntString -> TwoIntString -> Bool
 
 main :: IO ()
 main = do
-  print "hello"
   quickCheck (semigroupAssoc :: TwoAssoc)
+  quickCheck (monoidLeftIdentity :: TwoIntString -> Bool)
+  quickCheck (monoidRightIdentity :: TwoIntString -> Bool)
