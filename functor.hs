@@ -1,4 +1,3 @@
-#!/usr/bin/env stack
 {- stack
   script
   --resolver lts-8.11
