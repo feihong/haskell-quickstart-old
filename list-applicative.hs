@@ -59,13 +59,6 @@ newtype ZipList' a =
   ZipList' (List a)
   deriving (Eq, Show)
 
-instance Eq a => EqProp (ZipList' a) where
-  xs =-= ys = xs' `eq` ys'
-    where xs' = let (ZipList' l) = xs
-                in take' 3000 l
-          ys' = let (ZipList' l) = ys
-                in take' 3000 l
-
 instance Functor ZipList' where
   fmap f (ZipList' xs) = ZipList' $ fmap f xs
 
@@ -77,7 +70,7 @@ instance Applicative ZipList' where
     ZipList' (zipWith' (\f x -> f x) l1 l2)
 
 -- ZipList' (Cons (+1) (Cons (*2) Nil)) <*> ZipList' (Cons 2 (Cons 3 Nil))
--- ZipList' (Cons 3 (Cons 6 Nil)) 
+-- ZipList' (Cons 3 (Cons 6 Nil))
 
 -- TESTING
 
@@ -98,9 +91,24 @@ instance Arbitrary a => Arbitrary (List a) where
         y <- arbitrary
         return $ Cons x (Cons y Nil)
 
+instance Arbitrary a => Arbitrary (ZipList' a) where
+  arbitrary = do
+    x <- arbitrary
+    return $ ZipList' $ Cons x Nil
+
 instance Eq a => EqProp (List a) where (=-=) = eq
+
+instance Eq a => EqProp (ZipList' a) where
+  xs =-= ys = xs' `eq` ys'
+    where xs' = let (ZipList' l) = xs
+                in take' 3000 l
+          ys' = let (ZipList' l) = ys
+                in take' 3000 l
 
 main :: IO ()
 main = do
   let trigger = undefined :: List (String, Int, Char)
   quickBatch $ applicative trigger
+
+  let trigger2 = undefined :: ZipList' (String, Int, Char)
+  quickBatch $ applicative trigger2
