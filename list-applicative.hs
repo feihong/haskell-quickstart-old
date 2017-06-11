@@ -45,10 +45,21 @@ flatMap f = concat' . fmap f
 -- TESTING
 
 instance Arbitrary a => Arbitrary (List a) where
-  -- How to generate lists of different sizes?
-  arbitrary = do
-    x <- arbitrary
-    return $ Cons x Nil
+  -- Is there a better way to do this?
+  arbitrary =
+    frequency [
+      (10, oneElemList),
+      (10, twoElemList),
+      (1, return Nil)
+    ]
+    where
+      oneElemList = do
+        x <- arbitrary
+        return $ Cons x Nil
+      twoElemList = do
+        x <- arbitrary
+        y <- arbitrary
+        return $ Cons x (Cons y Nil)
 
 instance Eq a => EqProp (List a) where (=-=) = eq
 
