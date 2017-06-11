@@ -18,9 +18,8 @@ instance Applicative List where
   pure x = Cons x Nil
   Nil <*> _ = Nil
   _ <*> Nil = Nil
-  (Cons f t1) <*> l2 =
-    append (fmap f l2) (t1 <*> l2)
-
+  -- (Cons f t1) <*> l2 = append (fmap f l2) (t1 <*> l2)
+  l1 <*> l2 = flatMap (\f -> fmap f l2) l1
 
 append :: List a -> List a -> List a
 append Nil ys = ys
@@ -37,3 +36,4 @@ flatMap :: (a -> List b) -> List a -> List b
 flatMap f = concat' . fmap f
 
 -- Cons (+1) (Cons (*2) Nil) <*> Cons 1 (Cons 2 Nil)
+-- ~ Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
