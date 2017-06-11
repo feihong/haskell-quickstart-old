@@ -14,17 +14,6 @@ data List a =
   | Cons a (List a)
   deriving (Eq, Show)
 
-instance Functor List where
-  fmap _ Nil = Nil
-  fmap f (Cons h t) = Cons (f h) (fmap f t)
-
-instance Applicative List where
-  pure x = Cons x Nil
-  Nil <*> _ = Nil
-  _ <*> Nil = Nil
-  -- (Cons f t1) <*> l2 = append (fmap f l2) (t1 <*> l2)
-  l1 <*> l2 = flatMap (\f -> fmap f l2) l1
-
 append :: List a -> List a -> List a
 append Nil ys = ys
 append (Cons x xs) ys = Cons x (append xs ys)
@@ -39,8 +28,56 @@ concat' = fold append Nil
 flatMap :: (a -> List b) -> List a -> List b
 flatMap f = concat' . fmap f
 
+take' :: Int -> List a -> List a
+take' _ Nil = Nil
+take' n (Cons x xs) = Cons x $ take' (n-1) xs
+
+zipWith' :: (a -> b -> c) -> List a -> List b -> List c
+zipWith' _ Nil _ = Nil
+zipWith' _ _ Nil = Nil
+zipWith' f (Cons x xs) (Cons y ys) = Cons (f x y) $ zipWith' f xs ys
+
+-- List Applicative
+
+instance Functor List where
+  fmap _ Nil = Nil
+  fmap f (Cons h t) = Cons (f h) (fmap f t)
+
+instance Applicative List where
+  pure x = Cons x Nil
+  Nil <*> _ = Nil
+  _ <*> Nil = Nil
+  -- (Cons f t1) <*> l2 = append (fmap f l2) (t1 <*> l2)
+  l1 <*> l2 = flatMap (\f -> fmap f l2) l1
+
 -- Cons (+1) (Cons (*2) Nil) <*> Cons 1 (Cons 2 Nil)
 -- ~ Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
+
+-- ZipList Applicative
+
+newtype ZipList' a =
+  ZipList' (List a)
+  deriving (Eq, Show)
+
+instance Eq a => EqProp (ZipList' a) where
+  xs =-= ys = xs' `eq` ys'
+    where xs' = let (ZipList' l) = xs
+                in take' 3000 l
+          ys' = let (ZipList' l) = ys
+                in take' 3000 l
+
+instance Functor ZipList' where
+  fmap f (ZipList' xs) = ZipList' $ fmap f xs
+
+instance Applicative ZipList' where
+  pure x = ZipList' (Cons x Nil)
+  ZipList' Nil <*> _ = ZipList' Nil
+  _ <*> ZipList' Nil = ZipList' Nil
+  ZipList' l1 <*> ZipList' l2 =
+    ZipList' (zipWith' (\f x -> f x) l1 l2)
+
+-- ZipList' (Cons (+1) (Cons (*2) Nil)) <*> ZipList' (Cons 2 (Cons 3 Nil))
+-- ZipList' (Cons 3 (Cons 6 Nil)) 
 
 -- TESTING
 
