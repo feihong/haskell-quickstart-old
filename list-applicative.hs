@@ -1,8 +1,12 @@
 {- stack
   script
   --resolver lts-8.11
-  --package hspec
+  --package QuickCheck
+  --package checkers
 -}
+import Test.QuickCheck
+import Test.QuickCheck.Checkers
+import Test.QuickCheck.Classes
 
 
 data List a =
@@ -37,3 +41,11 @@ flatMap f = concat' . fmap f
 
 -- Cons (+1) (Cons (*2) Nil) <*> Cons 1 (Cons 2 Nil)
 -- ~ Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
+
+instance Eq a => EqProp (List a) where (=-=) = eq
+
+main :: IO ()
+-- main = quickBatch $ applicative (Cons ["b", "w", 1] Nil)
+main = do
+  let trigger = undefined :: [(String, String, Int)]
+  quickBatch $ applicative trigger
