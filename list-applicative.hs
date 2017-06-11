@@ -42,10 +42,17 @@ flatMap f = concat' . fmap f
 -- Cons (+1) (Cons (*2) Nil) <*> Cons 1 (Cons 2 Nil)
 -- ~ Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
 
+-- TESTING
+
+instance Arbitrary a => Arbitrary (List a) where
+  -- How to generate lists of different sizes?
+  arbitrary = do
+    x <- arbitrary
+    return $ Cons x Nil
+
 instance Eq a => EqProp (List a) where (=-=) = eq
 
 main :: IO ()
--- main = quickBatch $ applicative (Cons ["b", "w", 1] Nil)
 main = do
-  let trigger = undefined :: [(String, String, Int)]
+  let trigger = undefined :: List (String, Int, Char)
   quickBatch $ applicative trigger
