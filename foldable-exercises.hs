@@ -7,6 +7,20 @@ import Data.Monoid
 import Test.Hspec
 
 
+data Two a b =
+  Two a b
+  deriving (Eq, Show)
+
+instance Foldable (Two a) where
+  foldr f z (Two x y) = f y z
+  foldMap f (Two x y) = f y
+
+
+-- Write a filter function for Foldable types using foldMap.
+filterF :: (Applicative f, Foldable t, Monoid (f a)) => (a -> Bool) -> t a -> f a
+filterF f = foldMap (\x -> if f x then pure x else mempty)
+
+
 main :: IO ()
 main = hspec $ do
   describe "Foldable exercises" $ do
@@ -89,3 +103,8 @@ main = hspec $ do
 
       foldMap Product [2,3,4] `shouldBe` Product 24
       foldMap show [2,3,4] `shouldBe` "234"
+
+    it "filterF" $ do
+      filterF even [1,2,3,4] `shouldBe` [2,4]
+      filterF (const True) [1..7] `shouldBe` [1..7]
+      filterF (\x -> x == 66) [1,2,3,66,4,5,6] `shouldBe` [66]
