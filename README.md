@@ -4,7 +4,10 @@
 
 Install Stack. On Unix systems, run this command:
 
-`curl -sSL https://get.haskellstack.org/ | sh`
+```
+curl -sSL https://get.haskellstack.org/ | sh
+stack setup
+```
 
 ## Running
 
