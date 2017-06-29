@@ -20,10 +20,6 @@ instance Functor (Constant a) where
 instance Foldable (Constant a) where
   foldMap _ _ = mempty
 
-instance Monoid a => Applicative (Constant a) where
-  pure _ = Constant mempty
-  Constant x <*> Constant y = Constant $ x `mappend` y
-
 instance Traversable (Constant a) where
   -- traverse :: (Applicative f, Traversable t) => (a -> f b) -> t a -> f (t b)
   traverse f (Constant x) = fmap Constant (pure x)

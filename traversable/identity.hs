@@ -19,10 +19,6 @@ instance Functor Identity where
 instance Foldable Identity where
   foldMap f (Identity x) = f x
 
-instance Applicative Identity where
-  pure = Identity
-  Identity f <*> Identity x = Identity (f x)
-
 
 instance Traversable Identity where
   -- traverse :: (Applicative f, Traversable t) => (a -> f b) -> t a -> f (t b)
