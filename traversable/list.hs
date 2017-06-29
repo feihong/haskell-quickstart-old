@@ -1,11 +1,9 @@
 {- stack
   script
   --resolver lts-8.11
-  --package hspec
   --package QuickCheck
   --package checkers
 -}
-import Test.Hspec
 import Test.QuickCheck
 import Test.QuickCheck.Checkers
 import Test.QuickCheck.Classes
