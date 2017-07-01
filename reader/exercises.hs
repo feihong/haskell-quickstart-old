@@ -3,6 +3,7 @@
   --resolver lts-8.11
   --package hspec
 -}
+{-# LANGUAGE InstanceSigs #-}
 import Data.Char
 import Control.Applicative (liftA2)
 import Test.Hspec
@@ -27,9 +28,30 @@ tupled' = do
 newtype Reader r a =
   Reader { runReader :: r -> a }
 
+instance Functor (Reader r) where
+  fmap :: (a -> b) -> Reader r a -> Reader r b
+  fmap f (Reader ra) = Reader $ f . ra
+
+instance Applicative (Reader  r) where
+  pure :: a -> Reader r a
+  pure a = Reader $ \_ -> a
+
+  (<*>) :: Reader r (a -> b) -> Reader r a -> Reader r b
+  Reader rab <*> Reader ra =
+    Reader $ \r -> (rab r) (ra r)
+
 
 ask :: Reader a a
 ask = Reader (\x -> x)    -- id
+
+asks2 :: (r -> a) -> Reader r a
+asks2 f = Reader f
+
+bolt :: Integer -> Bool
+bolt = liftA2 (&&) (>3) (<8)
+
+sequA :: Integral a => a -> [Bool]
+sequA m = sequenceA [(>3), (<8), even] m
 
 
 main :: IO ()
@@ -42,3 +64,14 @@ main = hspec $ do
     it "tupled" $ do
       tupled "wonkee" `shouldBe` ("WONKEE","eeknow")
       tupled' "wonkee" `shouldBe` ("WONKEE","eeknow")
+
+    it "bolt" $ do
+      bolt 3 `shouldBe` False
+      bolt 8 `shouldBe` False
+      bolt 5 `shouldBe` True
+      bolt 4 `shouldBe` True
+
+    it "sequA" $ do
+      sequA 0 `shouldBe` [False,True,True]
+      sequA 4 `shouldBe` [True,True,True]
+      sequA 5 `shouldBe` [True,True,False]
